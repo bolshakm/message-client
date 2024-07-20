@@ -50,15 +50,14 @@ public class MessageClientApplication implements CommandLineRunner {
         validateUser(configuration, scanner);
 
         System.out.println("Choose topic for discussion:");
-
         validateTopic(configuration, scanner);
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(new GetMessageRunner(configuration), 0, 1, TimeUnit.SECONDS);
 
-        while (true){
+        while (true) {
             String input = getInput(scanner);
-            if (input.equalsIgnoreCase("-topic")){
+            if (input.equalsIgnoreCase("-topic")) {
                 System.out.println("Choose topic for discussion:");
                 validateTopic(configuration, scanner);
             }

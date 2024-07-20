@@ -1,7 +1,6 @@
 package com.tenet.messageclient.service;
 
 import com.tenet.messageclient.config.RequestConfiguration;
-import com.tenet.messageclient.model.Message;
 import com.tenet.messageclient.request.SendMessageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

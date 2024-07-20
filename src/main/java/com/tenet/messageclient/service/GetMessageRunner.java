@@ -6,10 +6,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class GetMessageRunner implements Runnable {
     private RequestConfiguration configuration;
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     public GetMessageRunner(RequestConfiguration configuration) {
         this.configuration = configuration;
@@ -19,18 +20,13 @@ public class GetMessageRunner implements Runnable {
     @Override
     public void run() {
         String url = configuration.getUrl() + "/api/v1/message?topic=" + configuration.getTopic() + "&lastRead=" + configuration.getLastRead();
-        restTemplate.getForEntity(url, List.class).getBody()
-                .stream()
-                .filter(item -> !StringUtils.startsWithIgnoreCase(item.toString(), configuration.getLogin()))
-                .forEach(System.out::println);
+        List<?> items = restTemplate.getForObject(url, List.class);
+        if (items != null) {
+            items.stream()
+                    .filter(Objects::nonNull)
+                    .filter(item -> !StringUtils.startsWithIgnoreCase(item.toString(), configuration.getLogin()))
+                    .forEach(System.out::println);
+        }
         configuration.setLastRead(LocalDateTime.now());
-    }
-
-    public RequestConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(RequestConfiguration configuration) {
-        this.configuration = configuration;
     }
 }
