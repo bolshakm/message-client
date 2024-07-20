@@ -1,0 +1,42 @@
+package com.tenet.messageclient.service;
+
+import com.tenet.messageclient.config.RequestConfiguration;
+import com.tenet.messageclient.request.LoginRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+@Service
+public class UserService {
+    private final RestTemplate restTemplate;
+
+    public UserService() {
+        this.restTemplate = new RestTemplate();
+    }
+
+    public List<String> getUserLogins(RequestConfiguration configuration) {
+        return Objects.requireNonNull(restTemplate
+                        .getForEntity(configuration.getUrl() + "/api/v1/user", List.class)
+                        .getBody());
+    }
+
+    public boolean isUserDataIncorrect(RequestConfiguration configuration) {
+        String login = configuration.getLogin();
+        String password = configuration.getPassword();
+        ResponseEntity<String> response = restTemplate.postForEntity(configuration.getUrl() + "/api/v1/user", new LoginRequest(login, password), String.class);
+        if (response.getStatusCode().is2xxSuccessful()){
+            if (Objects.equals(response.getBody(), "Login success!")){
+                System.out.println("Welcome back " + login + "!");
+            } else {
+                System.out.println("Welcome "+ login + ". We are happy you join us!");
+            }
+            return false;
+        }
+        System.out.println(response.getBody());
+        return true;
+    }
+}
