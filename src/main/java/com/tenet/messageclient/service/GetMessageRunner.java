@@ -27,6 +27,6 @@ public class GetMessageRunner implements Runnable {
                     .filter(item -> !StringUtils.startsWithIgnoreCase(item.toString(), configuration.getLogin()))
                     .forEach(System.out::println);
         }
-        configuration.setLastRead(LocalDateTime.now());
+        configuration.setLastRead(LocalDateTime.now().minusSeconds(10));
     }
 }
