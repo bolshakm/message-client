@@ -26,16 +26,19 @@ public class UserService {
     public boolean isUserDataIncorrect(RequestConfiguration configuration) {
         String login = configuration.getLogin();
         String password = configuration.getPassword();
-        ResponseEntity<String> response = restTemplate.postForEntity(configuration.getUrl() + "/api/v1/user", new LoginRequest(login, password), String.class);
-        if (response.getStatusCode().is2xxSuccessful()) {
-            if (Objects.equals(response.getBody(), "Login success!")) {
-                System.out.println("Welcome back " + login + "!");
-            } else {
-                System.out.println("Welcome " + login + ". We are happy you join us!");
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(configuration.getUrl() + "/api/v1/user", new LoginRequest(login, password), String.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                if (Objects.equals(response.getBody(), "Login success!")) {
+                    System.out.println("Welcome back " + login + "!");
+                } else {
+                    System.out.println("Welcome " + login + ". We are happy you join us!");
+                }
+                return false;
             }
-            return false;
+        } catch (Exception e) {
+            System.out.println("Wrong credentials!");
         }
-        System.out.println(response.getBody());
         return true;
     }
 }
